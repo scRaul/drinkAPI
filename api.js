@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const drinkRoute = require('./routes/drinkRoutes')
+const drinkRoute = require('./routes/drinkRoutes');
+const mongoose = require("mongoose");
+
 
 
 const api = express();
@@ -21,7 +23,13 @@ api.use(bodyParser.json());
 // DRink ROute
 api.use('/Drinks',drinkRoute);
 
-
-api.listen(3000,() => {
-   console.log("Express server running... ");
-});
+mongoose
+   .connect('mongodb+srv://scraul17:jPVEJZSS3lJPOnnd@cluster0.el9ts55.mongodb.net/drinks?retryWrites=true&w=majority')
+   .then(result =>{
+      api.listen(3000,() => {
+         console.log("Express server running... ");
+      });
+   })
+   .catch(err =>{
+      console.log(err)
+   });

@@ -1,26 +1,23 @@
-module.exports = class Drink {
-    #drinkID;
-    #drinkName;
-    #ingrediants; 
-    #description; 
-    #imageURL;
-    constructor(drinkId, drinkName){
-        this.#drinkID = drinkId; 
-        this.#drinkName = drinkName; 
-        this.#ingrediants = []; 
-        this.#description = "";
-        this.#imageURL = ""; 
-    }
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-    addIngrediant(ingrediant){
-        this.#ingrediants.push(ingrediant); 
+const drinkSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    imageUrl: {
+        type: String,
+        required: true
+    },
+    ingrediantList: {
+        type: Array,
+        requried:true
     }
+}) ;
 
-    setDescription(description){
-        this.#description = description; 
-    }
-
-    setImageUrl(imageURL){
-        this.#imageURL = imageURL; 
-    }
-}
+module.exports = mongoose.model("Drink",drinkSchema);

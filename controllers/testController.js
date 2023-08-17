@@ -1,7 +1,29 @@
+const Drink = require("../models/drink");
 exports.addADrink = (req,res,next ) =>{
-    res.status(200).json({
-        newDrink: {name: "new drink",description:"this is new"}
+    const name = req.body.name;
+    const ingrediantList = req.body.ingrediantList; 
+    const description = req.body.description;
+    const imageUrl = '../images/martini.jpg';
+
+    const drink = new Drink({
+        name: name,
+        description:description,
+        imageUrl: imageUrl,
+        ingrediantList: ingrediantList
     });
+    drink
+        .save()
+        .then(result =>{
+            console.log(result);
+            res.status(201).json({
+                message:"new drink added succesfully",
+                drink: drink
+            });
+        })
+        .catch(err =>{
+            console.log(err);
+        })
+  
 }
 
 exports.getAllDrinks = (req,res,next) => {
@@ -17,7 +39,7 @@ exports.getAllDrinks = (req,res,next) => {
 
 exports.getDrinkById = (req,res,next) => {
     res.status(200).json({
-        thisDrink: {name: "thisDrink",description:"thisDrink"}
+        thisDrink: {name: "thisDrink",description:"thisDrink", imageURL:"../images/martini.jpg"}
     });
 }
 
