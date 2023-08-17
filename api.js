@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const drinkRoute = require('./routes/drinks')
+const drinkRoute = require('./routes/drinkRoutes')
 
 
 const api = express();
@@ -22,4 +22,6 @@ api.use(bodyParser.json());
 api.use('/Drinks',drinkRoute);
 
 
-api.listen(3000);
+api.listen(3000,() => {
+   console.log("Express server running... ");
+});
