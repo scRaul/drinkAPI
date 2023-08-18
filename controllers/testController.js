@@ -22,24 +22,37 @@ exports.addADrink = (req,res,next ) =>{
         })
         .catch(err =>{
             console.log(err);
+            next();
         })
   
 }
 
 exports.getAllDrinks = (req,res,next) => {
-    res.status(200).json({
-        drinks : [ 
-        {name: "apple juice", description: "juice made from apples"},
-        {name: "old fashioned", description: "OG cocktail"},
-        {name: "Margarita", description: "sweet alcoholic beverage"},
-        {name: "Martini", description: "007"}
-        ]
-    });
+    Drink.find()
+    .then(drinks => {
+        res.status(200)
+        .json({
+            message : "Fetched list of drinks",
+            drinks: drinks
+        });
+    }).catch( err => {
+        next(err);
+    })
 }
 
-exports.getDrinkById = (req,res,next) => {
-    res.status(200).json({
-        thisDrink: {name: "thisDrink",description:"thisDrink", imageURL:"../images/martini.jpg"}
+exports.getDrinkByName = (req,res,next) => {
+    const drinkName = req.params.drinkName;
+    Drink.findOne({name : drinkName})
+    .then( drink => {
+        if(!drink ){
+            throw new Error('nill');
+        }
+        res.status(200).json({
+            message: "Found this drink",
+            drink: drink
+        })
+    }).catch( err =>{
+        next(err);
     });
 }
 
