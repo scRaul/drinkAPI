@@ -2,10 +2,31 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const drinkRoute = require('./routes/drinkRoutes');
 const mongoose = require("mongoose");
+const multer = require("multer");
+
+
 
 
 
 const api = express();
+
+const fileStorage = multer.diskStorage({
+   destination : ( req, file, cb) => {
+      cb(null, 'images');
+   },
+   filename : (req,file,cb) => {
+      cb(null,new Date().toISOString() + '-' + file.originalname);
+   }
+});
+
+const fileFilter = (req,file,cb) => {
+   if ( file.mimetype == 'image/png' || file.mimetype == 'image/jpeg' ||
+   file.mimetype == 'image/heic'){
+      cb(null,true);
+   }else{
+      cb(null,false);
+   }
+}
 
 //CORS
 api.use((req,res,next) => {
@@ -18,7 +39,7 @@ api.use((req,res,next) => {
 
 //Parsing Data
 api.use(bodyParser.json());
-
+api.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image')); 
 
 // DRink ROute
 api.use('/Drinks',drinkRoute);

@@ -3,7 +3,7 @@ exports.addADrink = (req,res,next ) =>{
     const name = req.body.name;
     const ingrediantList = req.body.ingrediantList; 
     const description = req.body.description;
-    const imageUrl = '../images/martini.jpg';
+    const imageUrl = req.file.path;
 
     const drink = new Drink({
         name: name,
