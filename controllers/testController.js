@@ -99,12 +99,20 @@ exports.updateDrink = (req,res,next) =>{
 
 }
 exports.deleteDrink = (req,res,next) =>{
-    res.status(200).json({
-        deleteDrink: {name: "deletedDrink",description:"thisDrink"}
-    });
+   const drinkName = req.params.drinkName; 
+   Drink.findOne({name:drinkName})
+   .then( drink =>{
+    clearImage(drink.imageUrl);
+    return Drink.findOneAndRemove({name:drinkName});
+
+   }).then(result =>{
+        res.status(200).json({message:"drink removed!",drink:result});
+   }).catch( err =>{
+        next(err);
+   })
 }
 
 const clearImage = filePath =>{
     filePath = path.join(__dirname,'..',filePath);
-    fs.unlink(filepath,err => console.log(err));
+    fs.unlink(filePath,err => console.log(err));
 }
