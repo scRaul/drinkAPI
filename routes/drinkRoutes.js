@@ -6,13 +6,13 @@ const router = express.Router();
 router.post('/add',controller.addADrink);
 // READ
 router.get('',controller.getAllDrinks);
-router.get('/:drinkId',controller.getDrinkById);
+router.get('/:drinkName',controller.getDrinkByName);
 
 //UPDATE 
-router.patch('/:drinkId',controller.updateDrink);
+router.patch('/:drinkName',controller.updateDrink);
 
 // DELETE 
-router.delete('/:drinkId',controller.deleteDrink);
+router.delete('/:drinkName',controller.deleteDrink);
 
 
 module.exports = router; 
