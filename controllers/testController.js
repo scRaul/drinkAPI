@@ -1,13 +1,9 @@
 const Drink = require("../models/drink");
 exports.addADrink = (req,res,next ) =>{
-    if(!req.file){
-        res.json({nada:req.file});
-        next();
-    }
     const name = req.body.name;
     const ingrediantList = req.body.ingrediantList; 
     const description = req.body.description;
-    const imageUrl = req.file.path;
+    const imageUrl = '../images/martini.jpg';
 
     const drink = new Drink({
         name: name,
@@ -41,22 +37,9 @@ exports.getAllDrinks = (req,res,next) => {
     });
 }
 
-exports.getDrinkByName = (req,res,next) => {
-    const drinkName = req.params.drinkName;
-    console.log(drinkName);
-    Drink.findOne({'name':drinkName})
-    .then(drink =>{
-        if(!drink){
-            throw new Error('not found!');
-        }
-        res.status(200).json({
-            message:"drink found",
-            drink: drink
-        })
-    })
-    .catch(err =>{
-        console.log(err);
-        next();
+exports.getDrinkById = (req,res,next) => {
+    res.status(200).json({
+        thisDrink: {name: "thisDrink",description:"thisDrink", imageURL:"../images/martini.jpg"}
     });
 }
 
