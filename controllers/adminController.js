@@ -1,17 +1,55 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const Admin = require('../models/admin');
+
 const fs = require("fs");
 const path = require("path");
-
-const drink = require("../models/drink");
 const Drink = require("../models/drink");
 const { fileURLToPath } = require("url");
+
+
+
+exports.login = (req,res,next) =>{
+    const username = req.body.username;
+    const password = req.body.password;
+    let loadedAdmin; 
+    Admin.findOne({username: username})
+        .then(admin =>{
+            if(!admin){
+                throw new Error("invalid login");
+            }
+            loadedAdmin = admin;
+            return bcrypt.compare(password,admin.password);
+        })
+        .then( isEqual =>{
+            if(!isEqual ){
+                throw new Error("Not Valid Password");
+            }
+            const token = jwt.sign({
+                admin: loadedAdmin.username
+            },'supersecretkey',
+            {expiresIn: '3h'}
+            );
+            res.status(200).json({
+                token: token
+            });
+        }).catch(err =>{
+            next(err);
+        })
+        
+
+}
+
 exports.addADrink = (req,res,next ) =>{
     const name = req.body.name;
+    const price = req.body.price;
     const ingrediantList = req.body.ingrediantList; 
     const description = req.body.description;
     const imageUrl = req.file.path;
 
     const drink = new Drink({
         name: name,
+        price: price,
         description:description,
         imageUrl: imageUrl,
         ingrediantList: ingrediantList
@@ -30,35 +68,6 @@ exports.addADrink = (req,res,next ) =>{
             next();
         })
   
-}
-
-exports.getAllDrinks = (req,res,next) => {
-    Drink.find()
-    .then(drinks => {
-        res.status(200)
-        .json({
-            message : "Fetched list of drinks",
-            drinks: drinks
-        });
-    }).catch( err => {
-        next(err);
-    })
-}
-
-exports.getDrinkByName = (req,res,next) => {
-    const drinkName = req.params.drinkName;
-    Drink.findOne({name : drinkName})
-    .then( drink => {
-        if(!drink ){
-            throw new Error('nill');
-        }
-        res.status(200).json({
-            message: "Found this drink",
-            drink: drink
-        })
-    }).catch( err =>{
-        next(err);
-    });
 }
 
 exports.updateDrink = (req,res,next) =>{

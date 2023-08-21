@@ -6,6 +6,10 @@ const drinkSchema = new Schema({
         type: String,
         required: true
     },
+    price: {
+        type: Number,
+        required: false
+    },
     description: {
         type: String,
         required: true

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const drinkRoute = require('./routes/drinkRoutes');
+const adminRoute = require('./routes/adminRoute');
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require('path');
@@ -45,7 +46,9 @@ api.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
 //serving static image
 api.use('/images',express.static(path.join(__dirname,'images')));
 
-// DRink ROute
+// Routes
+
+api.use('/admin',adminRoute);
 api.use('/Drinks',drinkRoute);
 
 mongoose
