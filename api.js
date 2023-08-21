@@ -12,6 +12,7 @@ const path = require('path');
 
 const api = express();
 
+//functions for file uploads using multer 
 const fileStorage = multer.diskStorage({
    destination : ( req, file, cb) => {
       cb(null, 'images');
@@ -20,7 +21,6 @@ const fileStorage = multer.diskStorage({
       cb(null,new Date().toISOString() + '-' + file.originalname);
    }
 });
-
 const fileFilter = (req,file,cb) => {
    if ( file.mimetype == 'image/png' || file.mimetype == 'image/jpeg' ||
    file.mimetype == 'image/heic'){
@@ -47,9 +47,8 @@ api.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'));
 api.use('/images',express.static(path.join(__dirname,'images')));
 
 // Routes
-
 api.use('/admin',adminRoute);
-api.use('/Drinks',drinkRoute);
+api.use('/drinks',drinkRoute);
 
 mongoose
    .connect('mongodb+srv://scraul17:jPVEJZSS3lJPOnnd@cluster0.el9ts55.mongodb.net/drinks?retryWrites=true&w=majority')

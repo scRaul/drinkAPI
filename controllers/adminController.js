@@ -41,6 +41,7 @@ exports.login = (req,res,next) =>{
 }
 
 exports.addADrink = (req,res,next ) =>{
+
     const name = req.body.name;
     const price = req.body.price;
     const ingrediantList = req.body.ingrediantList; 
@@ -73,10 +74,12 @@ exports.addADrink = (req,res,next ) =>{
 exports.updateDrink = (req,res,next) =>{
     const drinkName = req.params.drinkName;
     const description = req.body.description;
+    const price = req.body.price;
     const ingrediantList = req.body.ingrediantList;
     let imageUrl = req.body.image;
-    var fileUploaded = false;
+    let fileUploaded = false;
     if ( req.file ){
+        console.log("a new file was add!");
         imageUrl = req.file.path;
         fileUploaded = true;
     }
@@ -91,11 +94,13 @@ exports.updateDrink = (req,res,next) =>{
                 throw new Error('nil');
             }
             if(fileUploaded){
+                console.log("deleting the old file");
                 clearImage(drink.imageUrl);
             }
             drink.name = drinkName;
             drink.description = description;
             drink.ingrediantList = ingrediantList;
+            drink.price = price;
             drink.imageUrl = imageUrl;
             return drink.save();
         })
@@ -118,7 +123,8 @@ exports.deleteDrink = (req,res,next) =>{
         res.status(200).json({message:"drink removed!",drink:result});
    }).catch( err =>{
         next(err);
-   })
+   });
+   console.log('removed item');
 }
 
 const clearImage = filePath =>{
