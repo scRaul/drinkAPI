@@ -51,7 +51,6 @@ api.use((error,req,res,next)=>{
    const message = error.message;
    res.status(status).json({
       message : message,
-      error: error.array()
    });
 });
 

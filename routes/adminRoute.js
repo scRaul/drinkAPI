@@ -11,7 +11,7 @@ router.post('/add',auth,validateDrink,controller.addADrink);
 //UPDATE 
 router.put('/:drinkName',auth,validateDrink,controller.updateDrink);
 // DELETE 
-router.delete('/:drinkName',auth,validateDrink,controller.deleteDrink);
+router.delete('/:drinkName',auth,controller.deleteDrink);
 
 
 module.exports = router; 
