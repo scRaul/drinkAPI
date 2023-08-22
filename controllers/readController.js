@@ -23,7 +23,9 @@ exports.getDrinkByName = (req,res,next) => {
     Drink.findOne({name : drinkName})
     .then( drink => {
         if(!drink ){
-            throw new Error('nill');
+            const error = new Error('no drink was found');
+            error.statusCode = 404;
+            throw error;
         }
         res.status(200).json({
             message: "Found this drink",

@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const Drink = require("../models/drink");
 const { fileURLToPath } = require("url");
+const { error } = require('console');
 
 
 
@@ -16,24 +17,29 @@ exports.login = (req,res,next) =>{
     Admin.findOne({username: username})
         .then(admin =>{
             if(!admin){
-                throw new Error("invalid login");
+                const error = new Error('incorrect username');
+                error.statusCode = 401;
+                throw error;
             }
             loadedAdmin = admin;
             return bcrypt.compare(password,admin.password);
         })
         .then( isEqual =>{
             if(!isEqual ){
-                throw new Error("Not Valid Password");
+               const error = new Error('incorrect password');
+               error.statusCode = 401;
+               throw error; 
             }
             const token = jwt.sign({
                 admin: loadedAdmin.username
             },'supersecretkey',
-            {expiresIn: '3h'}
+            {expiresIn: '1h'}
             );
             res.status(200).json({
                 token: token
             });
         }).catch(err =>{
+            if(!error.statusCode) {error.statusCode = 500;}
             next(err);
         })
         
@@ -46,7 +52,14 @@ exports.addADrink = (req,res,next ) =>{
     const price = req.body.price;
     const ingredientList = req.body.ingredientList; 
     const description = req.body.description;
+
+    if(!req.file){
+        const error = new Error('No image provided');
+        error.status = 422;
+        throw error;
+    }
     const imageUrl = req.file.path;
+
 
     const drink = new Drink({
         name: name,
@@ -65,8 +78,8 @@ exports.addADrink = (req,res,next ) =>{
             });
         })
         .catch(err =>{
-            console.log(err);
-            next();
+            if(!error.statusCode) {error.statusCode = 500;}
+            next(err);
         })
   
 }
@@ -84,14 +97,17 @@ exports.updateDrink = (req,res,next) =>{
         fileUploaded = true;
     }
     if( !imageUrl ){
-        throw new Error("no file picked");
-        next();
+        const error = new Error("no file picked");
+        error.statusCode = 422;
+        throw error;
     }
 
     Drink.findOne({name:drinkName })
         .then(drink =>{
             if( !drink ){
-                throw new Error('nil');
+                const error = new Error("could not find post");
+                error.statusCode = 404;
+                throw error;
             }
             if(fileUploaded){
                 console.log("deleting the old file");
@@ -108,6 +124,7 @@ exports.updateDrink = (req,res,next) =>{
             res.status(200).json({message:"drink updated!", drink: result });
         })
         .catch(err =>{
+            if(!error.statusCode ){error.statusCode = 500;}
             next(err);
         })
 
@@ -116,12 +133,18 @@ exports.deleteDrink = (req,res,next) =>{
    const drinkName = req.params.drinkName; 
    Drink.findOne({name:drinkName})
    .then( drink =>{
+    if(!drink){
+        const error = new Error('no drink was found');
+        error.statusCode = 404;
+        throw error;
+    }
     clearImage(drink.imageUrl);
     return Drink.findOneAndRemove({name:drinkName});
 
    }).then(result =>{
         res.status(200).json({message:"drink removed!",drink:result});
    }).catch( err =>{
+        if(!error.statusCode){error.statusCode = 500;}
         next(err);
    });
    console.log('removed item');

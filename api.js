@@ -45,6 +45,15 @@ api.use('/images',express.static(path.join(__dirname,'images')));
 // Routes
 api.use('/admin',adminRoute);
 api.use('/drinks',drinkRoute);
+api.use((error,req,res,next)=>{
+   console.log(error);
+   const status = error.statusCode || 500; 
+   const message = error.message;
+   res.status(status).json({
+      message : message,
+      error: error.array()
+   });
+});
 
 mongoose
    .connect('mongodb+srv://scraul17:jPVEJZSS3lJPOnnd@cluster0.el9ts55.mongodb.net/drinks?retryWrites=true&w=majority')
