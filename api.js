@@ -6,10 +6,6 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require('path');
 
-
-
-
-
 const api = express();
 
 //functions for file uploads using multer 

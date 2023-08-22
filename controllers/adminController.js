@@ -44,7 +44,7 @@ exports.addADrink = (req,res,next ) =>{
 
     const name = req.body.name;
     const price = req.body.price;
-    const ingrediantList = req.body.ingrediantList; 
+    const ingredientList = req.body.ingredientList; 
     const description = req.body.description;
     const imageUrl = req.file.path;
 
@@ -53,7 +53,7 @@ exports.addADrink = (req,res,next ) =>{
         price: price,
         description:description,
         imageUrl: imageUrl,
-        ingrediantList: ingrediantList
+        ingredientList: ingredientList
     });
     drink
         .save()
@@ -75,7 +75,7 @@ exports.updateDrink = (req,res,next) =>{
     const drinkName = req.params.drinkName;
     const description = req.body.description;
     const price = req.body.price;
-    const ingrediantList = req.body.ingrediantList;
+    const ingredientList = req.body.ingredientList;
     let imageUrl = req.body.image;
     let fileUploaded = false;
     if ( req.file ){
@@ -99,7 +99,7 @@ exports.updateDrink = (req,res,next) =>{
             }
             drink.name = drinkName;
             drink.description = description;
-            drink.ingrediantList = ingrediantList;
+            drink.ingredientList = ingredientList;
             drink.price = price;
             drink.imageUrl = imageUrl;
             return drink.save();

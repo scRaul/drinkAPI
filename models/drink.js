@@ -18,7 +18,7 @@ const drinkSchema = new Schema({
         type: String,
         required: true
     },
-    ingrediantList: {
+    ingredientList: {
         type: Array,
         requried:true
     }
