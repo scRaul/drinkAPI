@@ -37,8 +37,16 @@ api.use((req,res,next) => {
 
 //Parsing Data
 api.use(bodyParser.json());
-api.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image')); 
 
+api.use( (req,res,next)=>{
+   console.log(req.body.username);
+   next();
+});
+//api.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image')); 
+api.use( (req,res,next)=>{
+   console.log(req.body.username);
+   next();
+});
 //serving static image
 api.use('/images',express.static(path.join(__dirname,'images')));
 
