@@ -8,24 +8,6 @@ const path = require('path');
 
 const api = express();
 
-//functions for file uploads using multer 
-const fileStorage = multer.diskStorage({
-   destination : ( req, file, cb) => {
-      cb(null, 'images');
-   },
-   filename : (req,file,cb) => {
-      cb(null,new Date().toISOString() + '-' + file.originalname);
-   }
-});
-const fileFilter = (req,file,cb) => {
-   if ( file.mimetype == 'image/png' || file.mimetype == 'image/jpeg' ||
-   file.mimetype == 'image/heic'){
-      cb(null,true);
-   }else{
-      cb(null,false);
-   }
-}
-
 //CORS
 api.use((req,res,next) => {
    res.setHeader('Access-Control-Allow-Origin','*');
@@ -36,17 +18,16 @@ api.use((req,res,next) => {
 });
 
 //Parsing Data
+api.use((req,res,next)=>{
+   console.log(req.body);
+   next();
+});
 api.use(bodyParser.json());
-
-api.use( (req,res,next)=>{
-   console.log(req.body.username);
+api.use((req,res,next)=>{
+   console.log(req.body);
    next();
 });
-//api.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image')); 
-api.use( (req,res,next)=>{
-   console.log(req.body.username);
-   next();
-});
+//api.use(multer().none());
 //serving static image
 api.use('/images',express.static(path.join(__dirname,'images')));
 
