@@ -1,4 +1,6 @@
 const multer = require('multer');
+const { getStorage, ref, uploadBytes, getDownloadURL } = require('firebase/storage');
+
 //functions for file uploads using multer 
 const fileStorage = multer.diskStorage({
     destination : ( req, file, cb) => {
@@ -16,5 +18,35 @@ const fileFilter = (req,file,cb) => {
        cb(null,false);
     }
  }
-
  exports.localUpload = multer({storage: fileStorage, fileFilter: fileFilter}).single('image');
+
+ exports.memUpload = multer({storage: multer.memoryStorage(), fileFilter: fileFilter}).single('image');
+ exports.fireabaseUpload = (req,res,next) =>{
+    const storage = getStorage();
+    if(!req.file){
+        const error = new Error('No image provided');
+        error.status = 422;
+        throw error;
+    }
+    const imageUrl = new Date().toISOString() +'-' + req.file.originalname;
+    const imageRef = ref(storage,`images/${imageUrl}`);
+    const metadata = {
+        contentType: req.file.mimetype
+    };
+    uploadBytes(imageRef,req.file.buffer,metadata).then( (snapshot)=>{
+        getDownloadURL(snapshot.ref).then((downloadURL) =>{
+            res.locals.download = downloadURL;
+            res.locals.path = `images/${imageUrl}`;
+            console.log(res.locals);
+            next();
+        }).catch(err =>{
+            const error = new Error('unable to get snapshot');
+            error.statusCode = 500;
+            next(err);
+        });
+    }).catch(err=>{
+        const error = new Error('unable to upload image');
+        error.statusCode = 500;
+        next(err);
+    });
+ }

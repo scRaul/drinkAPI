@@ -19,6 +19,7 @@ exports.validateDrink = [
             error.statusCode = 422;
             throw error;
         }
+        console.log('drink validated');
         next();
     }
 ];

@@ -5,7 +5,22 @@ const adminRoute = require('./routes/adminRoute');
 const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require('path');
+const {initializeApp} = require('firebase/app');
 
+const firebaseConfig = {
+   apiKey: "AIzaSyCFDoYwACBZ6I1CRqEgoDP0EUeORuLBEPE",
+   authDomain: "drinkapi-9006c.firebaseapp.com",
+   projectId: "drinkapi-9006c",
+   storageBucket: "drinkapi-9006c.appspot.com",
+   messagingSenderId: "465614946035",
+   appId: "1:465614946035:web:7663c0ff512bf5ae7e8186",
+   measurementId: "G-XR4BBDVENZ"
+ };
+
+ 
+
+const app = initializeApp(firebaseConfig);
+exports.app = app;
 const api = express();
 
 //CORS
@@ -18,15 +33,7 @@ api.use((req,res,next) => {
 });
 
 //Parsing Data
-api.use((req,res,next)=>{
-   console.log(req.body);
-   next();
-});
 api.use(bodyParser.json());
-api.use((req,res,next)=>{
-   console.log(req.body);
-   next();
-});
 //api.use(multer().none());
 //serving static image
 api.use('/images',express.static(path.join(__dirname,'images')));

@@ -58,15 +58,14 @@ exports.addADrink = (req,res,next ) =>{
         error.status = 422;
         throw error;
     }
-    const imageUrl = req.file.path;
-
+    const imagePath = res.locals.path;
 
     const drink = new Drink({
         name: name,
         price: price,
         description:description,
-        imageUrl: imageUrl,
-        ingredientList: ingredientList
+        imagePath: imagePath,
+        ingredientList: ingredientList,
     });
     drink
         .save()
@@ -89,14 +88,14 @@ exports.updateDrink = (req,res,next) =>{
     const description = req.body.description;
     const price = req.body.price;
     const ingredientList = req.body.ingredientList;
-    let imageUrl = req.body.image;
+    let imagePath = req.body.image;
     let fileUploaded = false;
     if ( req.file ){
         console.log("a new file was add!");
-        imageUrl = req.file.path;
+        imagePath = res.locals.path;
         fileUploaded = true;
     }
-    if( !imageUrl ){
+    if( !imagePath ){
         const error = new Error("no file picked");
         error.statusCode = 422;
         throw error;
@@ -111,13 +110,13 @@ exports.updateDrink = (req,res,next) =>{
             }
             if(fileUploaded){
                 console.log("deleting the old file");
-                clearImage(drink.imageUrl);
+                clearImage(drink.imagePath);
             }
             drink.name = drinkName;
             drink.description = description;
             drink.ingredientList = ingredientList;
             drink.price = price;
-            drink.imageUrl = imageUrl;
+            drink.imagePath = imagePath;
             return drink.save();
         })
         .then(result => {
@@ -138,7 +137,7 @@ exports.deleteDrink = (req,res,next) =>{
         error.statusCode = 404;
         throw error;
     }
-    clearImage(drink.imageUrl);
+    clearImage(drink.imagePath);
     return Drink.findOneAndRemove({name:drinkName});
 
    }).then(result =>{
