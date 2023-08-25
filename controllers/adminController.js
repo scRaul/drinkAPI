@@ -33,7 +33,7 @@ exports.login = (req,res,next) =>{
             }
             const token = jwt.sign({
                 admin: loadedAdmin.username
-            },'supersecretkey',
+            },process.env.SUPER_SECRET,
             {expiresIn: '1h'}
             );
             res.status(200).json({

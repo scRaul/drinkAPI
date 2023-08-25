@@ -8,13 +8,13 @@ const path = require('path');
 const {initializeApp} = require('firebase/app');
 
 const firebaseConfig = {
-   apiKey: "AIzaSyCFDoYwACBZ6I1CRqEgoDP0EUeORuLBEPE",
-   authDomain: "drinkapi-9006c.firebaseapp.com",
-   projectId: "drinkapi-9006c",
-   storageBucket: "drinkapi-9006c.appspot.com",
-   messagingSenderId: "465614946035",
-   appId: "1:465614946035:web:7663c0ff512bf5ae7e8186",
-   measurementId: "G-XR4BBDVENZ"
+   apiKey: process.env.FIRE_API_KEY,
+   authDomain: process.env.FIRE_AUTH_DOM,
+   projectId: process.env.FIRE_PROJ_ID,
+   storageBucket: process.env.FIRE_STORAGE_BUCKET,
+   messagingSenderId: process.env.FIRE_MESS_SERV,
+   appId: process.env.FIRE_APP_ID,
+   measurementId: process.env.FIRE_MESSURE_ID
  };
 
  
@@ -51,7 +51,7 @@ api.use((error,req,res,next)=>{
 });
 
 mongoose
-   .connect('mongodb+srv://scraul17:jPVEJZSS3lJPOnnd@cluster0.el9ts55.mongodb.net/drinks?retryWrites=true&w=majority')
+   .connect(process.env.MONGO_DB)
    .then(result =>{
       api.listen(3000,() => {
          console.log("Express server running... ");
