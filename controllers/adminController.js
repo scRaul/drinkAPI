@@ -7,6 +7,7 @@ const path = require("path");
 const Drink = require("../models/drink");
 const { fileURLToPath } = require("url");
 const { error } = require('console');
+const {removeImage} = require('../middleware/imageHandler');
 
 
 
@@ -59,6 +60,7 @@ exports.addADrink = (req,res,next ) =>{
         throw error;
     }
     const imagePath = res.locals.path;
+    const downloadURL = res.locals.downloadURL;
 
     const drink = new Drink({
         name: name,
@@ -66,6 +68,7 @@ exports.addADrink = (req,res,next ) =>{
         description:description,
         imagePath: imagePath,
         ingredientList: ingredientList,
+        downloadURL: downloadURL,
     });
     drink
         .save()
@@ -89,10 +92,12 @@ exports.updateDrink = (req,res,next) =>{
     const price = req.body.price;
     const ingredientList = req.body.ingredientList;
     let imagePath = req.body.image;
+    let downloadURL;
     let fileUploaded = false;
     if ( req.file ){
         console.log("a new file was add!");
         imagePath = res.locals.path;
+        downloadURL = res.locals.downloadURL;
         fileUploaded = true;
     }
     if( !imagePath ){
@@ -110,7 +115,7 @@ exports.updateDrink = (req,res,next) =>{
             }
             if(fileUploaded){
                 console.log("deleting the old file");
-                clearImage(drink.imagePath);
+                removeImage(drink.imagePath);
             }
             drink.name = drinkName;
             drink.description = description;
@@ -137,7 +142,7 @@ exports.deleteDrink = (req,res,next) =>{
         error.statusCode = 404;
         throw error;
     }
-    clearImage(drink.imagePath);
+    removeImage(drink.imagePath);
     return Drink.findOneAndRemove({name:drinkName});
 
    }).then(result =>{

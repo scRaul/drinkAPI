@@ -1,6 +1,7 @@
 const {body,validationResult} = require('express-validator');
 const fs = require("fs");
 const path = require("path");
+const {removeImage} = require('../middleware/imageHandler');
 
 
 exports.validateDrink = [
@@ -12,8 +13,8 @@ exports.validateDrink = [
         const errors = validationResult(req);
         if(!errors.isEmpty()){
 
-            if( req.file.path ){
-                clearImage(req.file.path);
+            if( res.locals.path ){
+                removeImage(res.locals.path);
             }
             const error = new Error('drink schema validation failed');
             error.statusCode = 422;
@@ -23,8 +24,3 @@ exports.validateDrink = [
         next();
     }
 ];
-
-const clearImage = filePath =>{
-    filePath = path.join(__dirname,'..',filePath);
-    fs.unlink(filePath,err => console.log(err));
-}

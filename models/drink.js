@@ -21,6 +21,11 @@ const drinkSchema = new Schema({
     ingredientList: {
         type: Array,
         requried:true
+    },
+    downloadURL:{
+        type: String,
+        required: true
+
     }
 }) ;
 
