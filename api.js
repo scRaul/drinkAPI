@@ -53,7 +53,7 @@ api.use((error,req,res,next)=>{
 mongoose
    .connect(process.env.MONGO_DB)
    .then(result =>{
-      api.listen(3000,() => {
+      api.listen(process.env.PORT || 3000,() => {
          console.log("Express server running... ");
       });
    })
