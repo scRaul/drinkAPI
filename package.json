@@ -4,7 +4,8 @@
   "description": "bar REST API",
   "main": "api.js",
   "scripts": {
-    "test": "nodemon api.js"
+    "test": "nodemon api.js",
+    "start":"npm api.js"
   },
   "author": "",
   "license": "ISC",
