@@ -9,42 +9,35 @@ const { fileURLToPath } = require("url");
 const { error } = require('console');
 const {removeImage} = require('../middleware/imageHandler');
 
-
-
-exports.login = (req,res,next) =>{
+exports.login = async (req,res,next) =>{
     const username = req.body.username;
     const password = req.body.password;
-    let loadedAdmin; 
-    Admin.findOne({username: username})
-        .then(admin =>{
-            if(!admin){
-                const error = new Error('incorrect username');
-                error.statusCode = 401;
-                throw error;
-            }
-            loadedAdmin = admin;
-            return bcrypt.compare(password,admin.password);
-        })
-        .then( isEqual =>{
-            if(!isEqual ){
-               const error = new Error('incorrect password');
-               error.statusCode = 401;
-               throw error; 
-            }
-            const token = jwt.sign({
-                admin: loadedAdmin.username
-            },process.env.SUPER_SECRET,
-            {expiresIn: '1h'}
-            );
-            res.status(200).json({
-                token: token
-            });
-        }).catch(err =>{
-            if(!error.statusCode) {error.statusCode = 500;}
-            next(err);
-        })
-        
-
+    try{
+        let admin = await Admin.findOne(username);
+        if(!admin){
+            const error = new Error('incorrect usernane');
+            error.statusCode = 401;
+            throw error;
+        }
+        let isEqual = await bcrypt.compare(password,admin.password);
+        if(!isEqual){
+            const error = new Error('incorrect password');
+            error.statusCode = 401;
+            throw error;
+        }
+        const token = jwt.sign({
+            admin: admin.username
+        },process.env.SUPER_SECRET,
+        {expiresIn: '1h'}
+        );
+        res.status(200).json({
+            username:admin.username,
+            token: token
+        });
+    }catch(error){
+        if(!error.statusCode) {error.statusCode = 500;}
+        next(error);
+    }
 }
 
 exports.addADrink = (req,res,next ) =>{

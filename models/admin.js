@@ -1,17 +1,22 @@
-const mongoose = require('mongoose');
+const { getDatabase, ref,child,get } = require('firebase/database');
+module.exports = class Admin {
 
-const Schema = mongoose.Schema; 
-
-const adminSchema = new Schema({
-    username:{
-        type : String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
+    constructor(username,password){
+        this.username = username;
+        this.password = password;
     }
-
-});
-
-module.exports = mongoose.model('Admin',adminSchema);
+    static async findOne(user){
+        const dbRef = ref(getDatabase());
+        try{
+            let snapshot = await get(child(dbRef, `users/${user}`));
+            if(snapshot.exists()){
+                return new Admin(snapshot.val().username,snapshot.val().password);
+            }else{
+                return null;
+            }
+        }catch(error){
+            console.log('unable to connect to RTDB');
+            return new Error("Cant connect to DB");
+        }
+    }
+}

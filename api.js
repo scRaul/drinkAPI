@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const drinkRoute = require('./routes/drinkRoutes');
 const adminRoute = require('./routes/adminRoute');
-const mongoose = require("mongoose");
+
 const multer = require("multer");
 const path = require('path');
 const {initializeApp} = require('firebase/app');
@@ -13,6 +13,7 @@ const { onRequest } = require('firebase-functions/v1/https');
 const firebaseConfig = {
    apiKey: process.env.FIRE_API_KEY,
    authDomain: process.env.FIRE_AUTH_DOM,
+   databaseURL:process.env.FIRE_REAL_DB,
    projectId: process.env.FIRE_PROJ_ID,
    storageBucket: process.env.FIRE_STORAGE_BUCKET,
    messagingSenderId: process.env.FIRE_MESS_SERV,
@@ -55,13 +56,7 @@ api.use((error,req,res,next)=>{
 
 // exports.drinkAPI = fireFunc.https.onRequest(api);
 
-mongoose
-   .connect(process.env.MONGO_DB)
-   .then(result =>{
-      api.listen(process.env.PORT || 3000,() => {
-         console.log("Express server running... ");
-      });
-   })
-   .catch(err =>{
-      console.log(err)
-   });
+
+api.listen(3000,()=>{
+   console.log("express server listening...");
+})
