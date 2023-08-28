@@ -70,7 +70,7 @@ exports.addADrink = async (req,res,next ) =>{
         })  
 }
 
-exports.updateDrink = (req,res,next) =>{
+exports.updateDrink = async (req,res,next) =>{
     const drinkName = req.params.drinkName;
     const description = req.body.description;
     const price = req.body.price;
@@ -90,52 +90,53 @@ exports.updateDrink = (req,res,next) =>{
         throw error;
     }
 
-    Drink.findOne({name:drinkName })
-        .then(drink =>{
-            if( !drink ){
-                const error = new Error("could not find post");
-                error.statusCode = 404;
-                throw error;
-            }
-            if(fileUploaded){
-                console.log("deleting the old file");
-                removeImage(drink.imagePath);
-            }
-            drink.name = drinkName;
-            drink.description = description;
-            drink.ingredientList = ingredientList;
-            drink.price = price;
-            drink.imagePath = imagePath;
-            return drink.save();
-        })
-        .then(result => {
-            res.status(200).json({message:"drink updated!", drink: result });
-        })
-        .catch(err =>{
-            if(!error.statusCode ){error.statusCode = 500;}
-            next(err);
-        })
-
-}
-exports.deleteDrink = (req,res,next) =>{
-   const drinkName = req.params.drinkName; 
-   Drink.findOne({name:drinkName})
-   .then( drink =>{
-    if(!drink){
-        const error = new Error('no drink was found');
+    let snap = await Drink.findOne(drinkName);
+    if(snap instanceof Error){
+        const error = new Error("could not find post");
         error.statusCode = 404;
         throw error;
     }
-    removeImage(drink.imagePath);
-    return Drink.findOneAndRemove({name:drinkName});
+    if(fileUploaded){
+        console.log("deleting the old file");
+        removeImage(snap.imagePath);
+    }
+    let drink = new Drink(drinkName,price,description,imagePath,downloadURL,ingredientList);
+    drink
+    .save( (result,err) =>{
+        if(result){
+            res.status(201).json({
+                message:"new drink added succesfully",
+                drink: drink
+            });
+        }
+        else{
+            next(err);
+        }
+    })  
 
-   }).then(result =>{
-        res.status(200).json({message:"drink removed!",drink:result});
-   }).catch( err =>{
-        if(!error.statusCode){error.statusCode = 500;}
-        next(err);
-   });
-   console.log('removed item');
+}
+exports.deleteDrink = async (req,res,next) =>{
+   const drinkName = req.params.drinkName; 
+
+   try{
+        let drink = await Drink.findOne(drinkName);
+        if(drink instanceof Error){
+            const error = new Error('no drink was found');
+            error.statusCode = 404;
+            throw error;
+        }
+        removeImage(drink.imagePath);
+        console.log('127')
+        Drink.remove(drinkName,(result,error)=>{
+            if(result){
+                res.status(200).json({message:"drink removed",drink:drink});
+            }else{
+                throw new Error('not found')
+            }  
+        });
+    }catch(error){
+        next(error);
+    }
 }
 
 const clearImage = filePath =>{
