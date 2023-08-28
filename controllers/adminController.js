@@ -1,3 +1,4 @@
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Admin = require('../models/admin');
@@ -31,7 +32,6 @@ exports.login = async (req,res,next) =>{
         {expiresIn: '1h'}
         );
         res.status(200).json({
-            username:admin.username,
             token: token
         });
     }catch(error){
@@ -40,7 +40,7 @@ exports.login = async (req,res,next) =>{
     }
 }
 
-exports.addADrink = (req,res,next ) =>{
+exports.addADrink = async (req,res,next ) =>{
 
     const name = req.body.name;
     const price = req.body.price;
@@ -55,28 +55,19 @@ exports.addADrink = (req,res,next ) =>{
     const imagePath = res.locals.path;
     const downloadURL = res.locals.downloadURL;
 
-    const drink = new Drink({
-        name: name,
-        price: price,
-        description:description,
-        imagePath: imagePath,
-        ingredientList: ingredientList,
-        downloadURL: downloadURL,
-    });
+    const drink = new Drink(name, price,description,imagePath,downloadURL,ingredientList);
     drink
-        .save()
-        .then(result =>{
-            console.log(result);
-            res.status(201).json({
-                message:"new drink added succesfully",
-                drink: drink
-            });
-        })
-        .catch(err =>{
-            if(!error.statusCode) {error.statusCode = 500;}
-            next(err);
-        })
-  
+        .save( (result,err) =>{
+            if(result){
+                res.status(201).json({
+                    message:"new drink added succesfully",
+                    drink: drink
+                });
+            }
+            else{
+                next(err);
+            }
+        })  
 }
 
 exports.updateDrink = (req,res,next) =>{

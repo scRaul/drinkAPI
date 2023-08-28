@@ -1,4 +1,5 @@
-const { getDatabase, ref,child,get } = require('firebase/database');
+//const { getDatabase, ref,child,get } = require('firebase/database');
+const {findOne } = require('../util/rtdb');
 module.exports = class Admin {
 
     constructor(username,password){
@@ -6,14 +7,9 @@ module.exports = class Admin {
         this.password = password;
     }
     static async findOne(user){
-        const dbRef = ref(getDatabase());
         try{
-            let snapshot = await get(child(dbRef, `users/${user}`));
-            if(snapshot.exists()){
-                return new Admin(snapshot.val().username,snapshot.val().password);
-            }else{
-                return null;
-            }
+            let snapshot = await findOne('users',user);
+            return new Admin(snapshot.username,snapshot.password);
         }catch(error){
             console.log('unable to connect to RTDB');
             return new Error("Cant connect to DB");

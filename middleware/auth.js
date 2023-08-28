@@ -1,3 +1,4 @@
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 module.exports = (req,res,next) => {
@@ -5,7 +6,7 @@ module.exports = (req,res,next) => {
     let decodedToken;
 
     try {
-        decodedToken = jwt.verify(token,'supersecretkey');
+        decodedToken = jwt.verify(token,process.env.SUPER_SECRET);
     }catch(err ){
         throw err; 
     }

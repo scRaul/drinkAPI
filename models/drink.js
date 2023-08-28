@@ -1,32 +1,30 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
-
-const drinkSchema = new Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    price: {
-        type: Number,
-        required: false
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    imagePath: {
-        type: String,
-        required: true
-    },
-    ingredientList: {
-        type: Array,
-        requried:true
-    },
-    downloadURL:{
-        type: String,
-        required: true
-
+const { getDatabase, ref, child, set } = require("firebase/database");
+module.exports = class Drink {
+    static path = 'drinks/';
+    constructor(name,price,description,imagePath,downloadURL,ingredientList){
+        this.name = name;
+        this.price = price;
+        this.description=description;
+        this.imagePath=imagePath;
+        this.downloadURL=downloadURL;
+        this.ingredientList=ingredientList;
     }
-}) ;
-
-module.exports = mongoose.model("Drink",drinkSchema);
+    self(){
+        return {
+            name:this.name,
+            price:this.price,
+            description:this.description,
+            imagePath:this.imagePath,
+            downloadURL:this.downloadURL,
+            ingredientList:this.ingredientList
+        };
+    }
+    save(cb) {
+        const db = getDatabase();
+        set(ref(db, `${Drink.path}${this.name}`),this.self()).then((result,error)=>{
+            cb(true,null);
+        }).catch(err =>{
+            cb(null,true);
+        });
+    }
+};
