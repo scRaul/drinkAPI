@@ -9,9 +9,9 @@ module.exports = class Admin {
     static async findOne(user){
         try{
             let snapshot = await findOne('users',user);
+             if(snapshot instanceof Error){return snapshot;}
             return new Admin(snapshot.username,snapshot.password);
         }catch(error){
-            console.log('unable to connect to RTDB');
             return new Error("Cant connect to DB");
         }
     }

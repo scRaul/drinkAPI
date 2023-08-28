@@ -7,10 +7,11 @@ exports.findOne = async (path,data) =>{
         if(snapshot.exists()){
             return snapshot.val();
         }else{
-            return null;
+            const error =  new Error('rec not found');
+            error.statusCode = 500;
+            throw error;
         }
     }catch(error){
-        console.log('unable to connect to RTDB');
-        return new Error("Cant connect to DB");
+        return error;
     }
 }

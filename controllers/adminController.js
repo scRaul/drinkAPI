@@ -15,7 +15,7 @@ exports.login = async (req,res,next) =>{
     const password = req.body.password;
     try{
         let admin = await Admin.findOne(username);
-        if(!admin){
+        if(admin instanceof Error){
             const error = new Error('incorrect usernane');
             error.statusCode = 401;
             throw error;

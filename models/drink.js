@@ -1,4 +1,5 @@
 const { getDatabase, ref, child, set } = require("firebase/database");
+const {findOne} = require('../util/rtdb');
 module.exports = class Drink {
     static path = 'drinks/';
     constructor(name,price,description,imagePath,downloadURL,ingredientList){
@@ -18,6 +19,31 @@ module.exports = class Drink {
             downloadURL:this.downloadURL,
             ingredientList:this.ingredientList
         };
+    }
+    static async findOne(drinkName){
+        try{
+            let snapshot = await findOne('drinks',drinkName);
+             if(snapshot instanceof Error){return snapshot;}
+            return new Drink(snapshot.name,snapshot.price,snapshot.description,snapshot.imagePath,snapshot.downloadURL,snapshot.ingredientList);
+        }catch(error){
+            return new Error("Cant connect to DB");
+        }
+    }
+    static async findAll(){
+        try{
+            let snapshot = await findOne('drinks','');
+             if(snapshot instanceof Error){return snapshot;}
+             else{
+                let array = [];
+                snapshot.forEach(el  => {
+                    let drink = new Drink(el.name,el.price,el.description,el.imagePath,el.downloadURL,el.ingredientList);
+                    array.push(drink)
+                });
+                return array;
+             }
+        }catch(error){
+            return new Error("Cant connect to DB");
+        }
     }
     save(cb) {
         const db = getDatabase();
