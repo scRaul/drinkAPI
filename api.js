@@ -53,6 +53,8 @@ api.use((error,req,res,next)=>{
    });
 });
 
+// exports.drinkAPI = fireFunc.https.onRequest(api);
+
 mongoose
    .connect(process.env.MONGO_DB)
    .then(result =>{
@@ -63,5 +65,3 @@ mongoose
    .catch(err =>{
       console.log(err)
    });
-
-   exports.fire_app = fireFunc.https.onRequest(api);
