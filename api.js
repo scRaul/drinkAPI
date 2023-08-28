@@ -6,6 +6,8 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require('path');
 const {initializeApp} = require('firebase/app');
+const fireFunc = require('firebase-functions');
+const { onRequest } = require('firebase-functions/v1/https');
 
 const firebaseConfig = {
    apiKey: process.env.FIRE_API_KEY,
@@ -60,3 +62,5 @@ mongoose
    .catch(err =>{
       console.log(err)
    });
+
+   exports.fire_app = fireFunc.https.onRequest(api);
