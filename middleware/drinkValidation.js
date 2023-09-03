@@ -7,7 +7,8 @@ const {removeImage} = require('../middleware/imageHandler');
 exports.validateDrink = [
     body('name').isLength({min: 3}),
     body('price').isFloat({min: 0.00}),
-    body('ingredientList').isArray({min:0}),
+    // body('ingredientList').isArray({min:0}),
+    body('ingredientList').notEmpty(),
     body('description').notEmpty(),
     (req,res,next) =>{
         const errors = validationResult(req);

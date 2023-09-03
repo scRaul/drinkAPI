@@ -9,6 +9,7 @@ const path = require('path');
 const {initializeApp} = require('firebase/app');
 const fireFunc = require('firebase-functions');
 const { onRequest } = require('firebase-functions/v1/https');
+const fileParser = require('express-multipart-file-parser')
 
 const firebaseConfig = {
    apiKey: process.env.FIRE_API_KEY,
@@ -38,6 +39,7 @@ api.use((req,res,next) => {
 
 //Parsing Data
 api.use(bodyParser.json());
+api.use(fileParser);
 //api.use(multer().none());
 //serving static image
 api.use('/images',express.static(path.join(__dirname,'images')));
@@ -54,9 +56,9 @@ api.use((error,req,res,next)=>{
    });
 });
 
-// exports.drinkAPI = fireFunc.https.onRequest(api);
+exports.drinkAPI = fireFunc.https.onRequest(api);
 
 
-api.listen(3000,()=>{
-   console.log("express server listening...");
-})
+// api.listen(3000,()=>{
+//    console.log("express server listening...");
+// })

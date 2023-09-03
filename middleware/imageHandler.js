@@ -23,17 +23,29 @@ const fileFilter = (req,file,cb) => {
  exports.memUpload = multer({storage: multer.memoryStorage(), fileFilter: fileFilter}).single('image');
  exports.fireabaseUpload = (req,res,next) =>{
     const storage = getStorage();
-    if(!req.file){
+    if(typeof req.files == 'undefined'){
         const error = new Error('No image provided');
         error.status = 422;
         throw error;
     }
-    const imageUrl = new Date().toISOString() +'-' + req.file.originalname;
+    const {
+        fieldname,
+        originalname,
+        encoding,
+        mimetype,
+        buffer,
+      } = req.files[0];
+    if(mimetype != 'image/heic' && mimetype != 'image/jpeg'){
+        const error = new Error('Wrong format');
+        error.status = 422;
+        throw error;
+    }
+    const imageUrl = new Date().toISOString() +'-' + originalname;
     const imageRef = ref(storage,`images/${imageUrl}`);
     const metadata = {
-        contentType: req.file.mimetype
+        contentType: mimetype
     };
-    uploadBytes(imageRef,req.file.buffer,metadata).then( (snapshot)=>{
+    uploadBytes(imageRef,buffer,metadata).then( (snapshot)=>{
         getDownloadURL(snapshot.ref).then((downloadURL) =>{
             res.locals.downloadURL = downloadURL;
             res.locals.path = `images/${imageUrl}`;

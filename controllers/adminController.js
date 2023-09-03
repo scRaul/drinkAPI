@@ -47,7 +47,7 @@ exports.addADrink = async (req,res,next ) =>{
     const ingredientList = req.body.ingredientList; 
     const description = req.body.description;
 
-    if(!req.file){
+    if(typeof req.files == 'undefined'){
         const error = new Error('No image provided');
         error.status = 422;
         throw error;
@@ -78,7 +78,7 @@ exports.updateDrink = async (req,res,next) =>{
     let imagePath = req.body.image;
     let downloadURL;
     let fileUploaded = false;
-    if ( req.file ){
+    if(typeof req.files != 'undefined'){
         console.log("a new file was add!");
         imagePath = res.locals.path;
         downloadURL = res.locals.downloadURL;
