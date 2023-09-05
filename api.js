@@ -28,6 +28,10 @@ const app = initializeApp(firebaseConfig);
 exports.app = app;
 const api = express();
 
+//Parsing Data
+api.use(bodyParser.json());
+api.use(fileParser);
+
 //CORS
 api.use((req,res,next) => {
    res.setHeader('Access-Control-Allow-Origin','*');
@@ -37,9 +41,6 @@ api.use((req,res,next) => {
    next();
 });
 
-//Parsing Data
-api.use(bodyParser.json());
-api.use(fileParser);
 //api.use(multer().none());
 //serving static image
 api.use('/images',express.static(path.join(__dirname,'images')));
