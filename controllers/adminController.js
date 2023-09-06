@@ -11,7 +11,7 @@ const { error } = require('console');
 const {removeImage} = require('../middleware/imageHandler');
 
 exports.login = async (req,res,next) =>{
-    console.log(req.body.username);
+    console.log(req.body);
     const username = req.body.username;
     const password = req.body.password;
     console.log(username,password);
