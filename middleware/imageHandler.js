@@ -22,6 +22,7 @@ const fileFilter = (req,file,cb) => {
 
  exports.memUpload = multer({storage: multer.memoryStorage(), fileFilter: fileFilter}).single('image');
  exports.fireabaseUpload = (req,res,next) =>{
+    console.log('firebase upload')
     const storage = getStorage();
     if(typeof req.files == 'undefined'){
         const error = new Error('No image provided');

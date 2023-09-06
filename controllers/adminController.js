@@ -11,10 +11,10 @@ const { error } = require('console');
 const {removeImage} = require('../middleware/imageHandler');
 
 exports.login = async (req,res,next) =>{
-    console.log(req.body);
+    console.log('login end point')
     const username = req.body.username;
     const password = req.body.password;
-    console.log(username,password);
+
     try{
         let admin = await Admin.findOne(username);
         if(admin instanceof Error){
@@ -23,7 +23,7 @@ exports.login = async (req,res,next) =>{
             throw error;
         }
         let isEqual = await bcrypt.compare(password,admin.password);
-        console.log(isEqual);
+
         if(!isEqual){
             const error = new Error('incorrect password');
             error.statusCode = 401;
@@ -45,7 +45,7 @@ exports.login = async (req,res,next) =>{
 }
 
 exports.addADrink = async (req,res,next ) =>{
-
+    console.log('add end point')
     const name = req.body.name;
     const price = req.body.price;
     const ingredientList = req.body.ingredientList; 
@@ -75,6 +75,7 @@ exports.addADrink = async (req,res,next ) =>{
 }
 
 exports.updateDrink = async (req,res,next) =>{
+    console.log('update drink end point')
     const drinkName = req.params.drinkName;
     const description = req.body.description;
     const price = req.body.price;
@@ -120,6 +121,7 @@ exports.updateDrink = async (req,res,next) =>{
 
 }
 exports.deleteDrink = async (req,res,next) =>{
+    console.log('delete endpoint')
    const drinkName = req.params.drinkName; 
 
    try{
