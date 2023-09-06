@@ -11,8 +11,10 @@ const { error } = require('console');
 const {removeImage} = require('../middleware/imageHandler');
 
 exports.login = async (req,res,next) =>{
+    console.log(req.body.username);
     const username = req.body.username;
     const password = req.body.password;
+    console.log(username,password);
     try{
         let admin = await Admin.findOne(username);
         if(admin instanceof Error){
@@ -21,6 +23,7 @@ exports.login = async (req,res,next) =>{
             throw error;
         }
         let isEqual = await bcrypt.compare(password,admin.password);
+        console.log(isEqual);
         if(!isEqual){
             const error = new Error('incorrect password');
             error.statusCode = 401;
@@ -31,6 +34,7 @@ exports.login = async (req,res,next) =>{
         },process.env.SUPER_SECRET,
         {expiresIn: '1h'}
         );
+        console.log(token);
         res.status(200).json({
             token: token
         });

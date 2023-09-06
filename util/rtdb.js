@@ -2,7 +2,6 @@ const { getDatabase, ref,child,get } = require('firebase/database');
 
 exports.findOne = async (path,data) =>{
     const dbRef = ref(getDatabase());
-    console.log(`${path}/${data}`);
     try{
         let snapshot = await get(child(dbRef, `${path}/${data}`));
         if(snapshot.exists()){
