@@ -32,18 +32,15 @@ const api = express();
 api.use(bodyParser.json());
 api.use(fileParser);
 
-//CORS
-api.use((req, res, next) => {
-   res.setHeader('Access-Control-Allow-Origin', '*'); // Adjust the origin as needed
-   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,PUT,DELETE,OPTIONS');
-   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-   next();
- });
-api.options((req,res) =>{
-   console.log('options')
-   res.status(204).end();
-});
-
+// //CORS   *** now being set per route 
+// api.use((req,res,next) => {
+//    res.setHeader('Access-Control-Allow-Origin','http://localhost:3000');
+//    res.setHeader('Access-Control-Allow-Methods','GET, POST, PUT, PATCH, DELETE, OPTIONS');
+//    res.setHeader('Access-Control-Allow-Header','Content-Type, Authorization');
+//    res.setHeader('Access-Control-Allow-Credentials', 'true'); // If you need to send cookies
+//    res.status(200).end(); 
+//    next();
+// });
 //api.use(multer().none());
 //serving static image
 api.use('/images',express.static(path.join(__dirname,'images')));
