@@ -8,7 +8,7 @@ exports.findOne = async (path,data) =>{
             return snapshot.val();
         }else{
             const error =  new Error('rec not found');
-            error.statusCode = 500;
+            error.statusCode = 404;
             throw error;
         }
     }catch(error){

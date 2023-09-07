@@ -32,15 +32,20 @@ const api = express();
 api.use(bodyParser.json());
 api.use(fileParser);
 
-// //CORS   *** now being set per route 
-// api.use((req,res,next) => {
-//    res.setHeader('Access-Control-Allow-Origin','http://localhost:3000');
-//    res.setHeader('Access-Control-Allow-Methods','GET, POST, PUT, PATCH, DELETE, OPTIONS');
-//    res.setHeader('Access-Control-Allow-Header','Content-Type, Authorization');
-//    res.setHeader('Access-Control-Allow-Credentials', 'true'); // If you need to send cookies
-//    res.status(200).end(); 
-//    next();
-// });
+// //CORS
+api.use((req, res, next) => {
+   // Set CORS headers
+   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+   // Handle preflight requests (OPTIONS)
+   if (req.method === 'OPTIONS') {
+     return res.sendStatus(200); // Respond with a 200 status for preflight requests
+   }
+   // Continue processing for non-preflight requests
+   next();
+ });
+ 
 //api.use(multer().none());
 //serving static image
 api.use('/images',express.static(path.join(__dirname,'images')));

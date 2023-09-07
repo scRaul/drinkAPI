@@ -11,7 +11,10 @@
         ".git",
         "firebase-debug.log",
         "firebase-debug.*.log"
-      ]
+      ],
+      "cors": {
+        "origin": ["http://localhost:3000"]
+      }
     }
   ]
 }
