@@ -1,5 +1,5 @@
 const express = require('express');
-const {auth} = require('../middleware/auth');
+const {auth,verify} = require('../middleware/auth');
 const testEnd = require('../middleware/testEnd')
 const controller = require("../controllers/adminController");
 const router = express.Router(); 
@@ -8,7 +8,7 @@ const {localUpload,fireabaseUpload, memUpload} = require('../middleware/imageHan
 
 
 router.post('/login', controller.login);
-
+router.post('/verify-token',verify);
 router.use(auth);
 // DELETE 
 router.delete('/:drinkName',controller.deleteDrink);

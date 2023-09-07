@@ -9,7 +9,10 @@ module.exports = class Admin {
     static async findOne(user){
         try{
             let snapshot = await findOne('users',user);
-             if(snapshot instanceof Error){return snapshot;}
+            if (!snapshot) {
+                throw new Error('User not found');
+            }    
+           //  if(snapshot instanceof Error){return snapshot;}
             return new Admin(snapshot.username,snapshot.password);
         }catch(error){
             return new Error("Cant connect to DB");

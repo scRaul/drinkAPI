@@ -17,16 +17,17 @@ exports.login = async (req,res,next) =>{
 
     try{
         let admin = await Admin.findOne(username);
-        if(admin instanceof Error){
+        // if(admin instanceof Error){
+        if(!admin){
             const error = new Error('incorrect usernane');
-            error.statusCode = 401;
+            error.statusCode = 403;
             throw error;
         }
         let isEqual = await bcrypt.compare(password,admin.password);
 
         if(!isEqual){
             const error = new Error('incorrect password');
-            error.statusCode = 401;
+            error.statusCode = 403;
             throw error;
         }
         const token = jwt.sign({
