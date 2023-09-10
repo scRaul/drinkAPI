@@ -13,7 +13,7 @@
         "firebase-debug.*.log"
       ],
       "cors": {
-        "origin": ["http://localhost:3000"]
+        "origin": ["https://bar-app-lilac.vercel.app"]
       }
     }
   ]
