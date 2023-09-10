@@ -76,31 +76,36 @@ exports.addADrink = async (req,res,next ) =>{
 }
 
 exports.updateDrink = async (req,res,next) =>{
-    console.log('update drink end point')
+
+    console.log('update drink end point');
     const drinkName = req.params.drinkName;
+    let snap;
+    try{
+        snap = await Drink.findOne(drinkName);
+        if(!snap){
+            const error = new Error("could not find post");
+            error.statusCode = 404;
+            throw error;
+        }
+    }catch(err){
+        return next(err);
+    }
     const description = req.body.description;
     const price = req.body.price;
     const ingredientList = req.body.ingredientList;
-    let imagePath = req.body.image;
+
+
+    let imagePath;
     let downloadURL;
     let fileUploaded = false;
-    if(typeof req.files != 'undefined'){
+    if(req.files.length > 0){
         console.log("a new file was add!");
         imagePath = res.locals.path;
         downloadURL = res.locals.downloadURL;
         fileUploaded = true;
-    }
-    if( !imagePath ){
-        const error = new Error("no file picked");
-        error.statusCode = 422;
-        throw error;
-    }
-
-    let snap = await Drink.findOne(drinkName);
-    if(snap instanceof Error){
-        const error = new Error("could not find post");
-        error.statusCode = 404;
-        throw error;
+    }else{
+        downloadURL = snap.downloadURL;
+        imagePath = snap.imagePath;
     }
     if(fileUploaded){
         console.log("deleting the old file");

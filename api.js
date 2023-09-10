@@ -9,7 +9,7 @@ const path = require('path');
 const {initializeApp} = require('firebase/app');
 const fireFunc = require('firebase-functions');
 const { onRequest } = require('firebase-functions/v1/https');
-const fileParser = require('express-multipart-file-parser')
+const fileParser = require('express-multipart-file-parser');
 
 const firebaseConfig = {
    apiKey: process.env.FIRE_API_KEY,
@@ -29,8 +29,8 @@ exports.app = app;
 const api = express();
 
 //Parsing Data
-api.use(bodyParser.json());
 api.use(fileParser);
+api.use(bodyParser.json());
 
 // //CORS
 api.use((req, res, next) => {
@@ -57,8 +57,10 @@ api.use((error,req,res,next)=>{
    console.log(error);
    const status = error.statusCode || 500; 
    const message = error.message;
+   const errors = error.errors? error.errors : [];
    res.status(status).json({
       message : message,
+      errors : errors
    });
 });
 

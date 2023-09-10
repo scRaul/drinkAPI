@@ -24,11 +24,11 @@ const fileFilter = (req,file,cb) => {
  exports.fireabaseUpload = (req,res,next) =>{
     console.log('firebase upload')
     const storage = getStorage();
-    if(typeof req.files == 'undefined'){
-        const error = new Error('No image provided');
-        error.status = 422;
-        throw error;
+    if(req.files.length == 0){
+        console.log('no image provided');
+        return next();
     }
+    console.log('image provided')
     const {
         fieldname,
         originalname,
